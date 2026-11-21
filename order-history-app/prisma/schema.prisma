@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Customer {
+  id                String   @id @default(uuid()) @db.Uuid
+  shopifyCustomerId String   @unique
+  createdAt         DateTime @default(now())
+  orders            Order[]
+}
+
+model Order {
+  id              String   @id @default(uuid()) @db.Uuid
+  customerId      String   @db.Uuid
+  customer        Customer @relation(fields: [customerId], references: [id])
+  source          String
+  externalOrderId String @unique
+  orderNumber     String
+  orderDate       DateTime
+  status          String
+  currency        String
+  subtotal        Decimal? @db.Decimal(12, 2)
+  tax             Decimal? @db.Decimal(12, 2)
+  total           Decimal  @db.Decimal(12, 2)
+  items           Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([source, externalOrderId], name: "source_externalOrderId")
+  @@index([customerId, orderDate(sort: Desc)])
+}
+
+model SyncState {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

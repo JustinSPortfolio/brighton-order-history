@@ -1,0 +1,19 @@
+{% comment %}
+Customer-account storefront.
+For Shopify New Customer Accounts, build a Customer Account UI Extension
+and use its authenticated session token rather than assuming Liquid/App Proxy.
+{% endcomment %}
+
+<section class="order-history" data-order-history>
+  <h1>Order History</h1>
+  <p data-status aria-live="polite">Loading orders…</p>
+  <div data-orders></div>
+  <nav aria-label="Order history pages">
+    <button type="button" data-prev disabled>Previous</button>
+    <span data-page>Page 1</span>
+    <button type="button" data-next disabled>Next</button>
+  </nav>
+</section>
+
+{{ 'order-history.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'order-history.js' | asset_url }}" defer></script>
